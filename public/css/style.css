@@ -1,0 +1,13 @@
+body {
+    
+}
+h1, h2 {
+    font-weight: 600;
+}
+.lc-head-logo {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+.section-row-search {
+    background-color: #f9f9f9;
+}
