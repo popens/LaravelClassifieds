@@ -14,7 +14,7 @@
     <header class="bg-white border-bottom">
         <div class="container-fluid">
             <div class="d-flex flex-column flex-md-row pt-3 pb-3 align-items-center">
-                <h1 class="lc-head-logo my-0 mr-md-auto">Laravel Classifieds</h1>
+                <h1 class="lc-head-logo my-0 mr-md-auto"><a href="{{ url('/') }}">Laravel Classifieds</a></h1>
                 
                 <nav class="my-2 my-md-0 mr-md-3">
                     <a class="p-2 text-dark" href="{{ url('/') }}">Home</a>

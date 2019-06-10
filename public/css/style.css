@@ -8,6 +8,14 @@ h1, h2 {
     font-weight: 600;
     font-size: 1.5rem;
 }
+.home-search-container {
+    width: 70%;
+    margin: 0 auto;
+}
 .section-row-search {
     background-color: #f9f9f9;
 }
+/* .home-search-form {
+    border: 1px solid #ddd;
+    background-color: #fff;
+} */
