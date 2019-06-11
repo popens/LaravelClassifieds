@@ -1,7 +1,7 @@
 @extends('layouts.front')
 
 @section('content')
-    <div class="section-row-search">
+    <div class="section-row-search bg-light">
         <div class="container home-search-container pt-5 pb-5">
             <h1 class="text-center">Search Classifieds</h1>
             <p class="text-center lead">Search from over {ADS COUNT} classifieds & Post unlimited classifieds free!</p>

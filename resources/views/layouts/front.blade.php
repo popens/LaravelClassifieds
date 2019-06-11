@@ -39,8 +39,10 @@
     @yield('content')
 
     <footer class="bg-white border-top">
-        <div class="container-fluid">
-            <small class="d-block mb-3 text-muted">&copy; 2017-2019</small>
+        <div class="container">
+            <div class="text-center pt-3 pb-3">
+            <small class="d-block mb-3 text-muted">2019 &copy; Laravel Classifieds</small>
+            </div>
         </div>
     </footer>
 </body>
