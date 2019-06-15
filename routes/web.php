@@ -24,3 +24,20 @@ Route::middleware('auth')->group(function() {
         return view('user/dashboard');
     });
 });
+
+
+
+Route::get('/classifieds', 'ListingsController@listAll')->name('classifieds');
+Route::get('/classified/edit/{i}', 'ListingsController@edit')->name('editlisting');
+Route::get('/classified/view/{i}', 'ListingsController@view')->name('viewlisting');
+
+Route::get("/classified/new", function() {
+    return view("/classifieds/classified-new");
+})->name('addlistings');
+
+
+
+Route::post("/classified/create", "ListingsController@create")->name('add');
+Route::post("/classified/update/{i}", "ListingsController@update")->name('update');
+Route::get("/classified/delete/{i}", "ListingsController@delete")->name('deletelisting');
+

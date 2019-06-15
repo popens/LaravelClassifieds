@@ -31,7 +31,7 @@
                         @endauth
                     @endif
                 </nav>
-                <a class="btn btn-secondary" href="#">POST FREE AD</a>
+                <a class="btn btn-secondary" href="{{ route('addlistings') }}">POST FREE AD</a>
             </div>
         </div>
     </header>
