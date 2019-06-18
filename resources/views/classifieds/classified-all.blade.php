@@ -5,7 +5,7 @@
     </div>
 @endif
 @section('content')
-<h2>All Classifieds</h2>
+    <h2>All Classifieds</h2>
 
     <ul>
     @foreach($item->all() as $item)
@@ -17,8 +17,5 @@
         </li>
     @endforeach
     </ul>
-
-
-
-
+    
 @endsection

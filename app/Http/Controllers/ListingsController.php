@@ -37,14 +37,12 @@ class ListingsController extends Controller
         $model->description = $request->input('description');
         $model->price = $request->input('price');
 
-       // if($request->input('image')) {
-            $image = $request->file('image');
-            $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
-            $destinationPath = public_path('/images');
-            $image->move($destinationPath, $input['imagename']);
-            
-            $model->image = $input['imagename'];
-       // }
+        $image = $request->file('image');
+        $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
+        $destinationPath = public_path('/images');
+        $image->move($destinationPath, $input['imagename']);
+        
+        $model->image = $input['imagename'];
 
         $model->save();
 
@@ -58,10 +56,11 @@ class ListingsController extends Controller
             'description' => 'Required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ));
-         $image = $request->file('image');
-            $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
-            $destinationPath = public_path('/images');
-            $image->move($destinationPath, $input['imagename']);
+        
+        $image = $request->file('image');
+        $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
+        $destinationPath = public_path('/images');
+        $image->move($destinationPath, $input['imagename']);
             
             
         $data = array(
@@ -70,7 +69,9 @@ class ListingsController extends Controller
             'price' => $request->input('price'),
             'image' =>  $input['imagename']
             );
+
         Listings::where('id', $id)->update($data);
+
         return redirect('/classifieds')->with('info', 'You updated successfully');
     }
 
@@ -87,13 +88,11 @@ class ListingsController extends Controller
             );
         Listings::where('id', $id)->update($data);
 
-       $image_path = public_path('/images/'.$image);
-       if(File::exists($image_path)) {
-         File::delete($image_path);
+        $image_path = public_path('/images/'.$image);
+        if(File::exists($image_path)) {
+            File::delete($image_path);
         }
         return redirect(route('editlisting', array($id)))->with('info', 'Image removed');
     }
-
-    
 
 }
