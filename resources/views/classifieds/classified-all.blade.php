@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.front')
 @if(session('info'))
     <div class="alert alert-success">
         {{session('info')}}
