@@ -1,5 +1,4 @@
 @extends('layouts.front')
-
 @section('content')
 <div class="section-row-login bg-light">
     <div class="container">
