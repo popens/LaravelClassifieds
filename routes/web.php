@@ -10,7 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+use Illuminate\Support\Str;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function() {
 
 Route::get('/classifieds', 'ListingsController@listAll')->name('classifieds');
 Route::get('/classified/edit/{i}', 'ListingsController@edit')->name('editlisting');
-Route::get('/classified/view/{i}', 'ListingsController@view')->name('viewlisting');
+Route::get('/classified/{i}/{t}', 'ListingsController@view')->name('viewlisting');
 
 Route::get("/classified/new", function() {
     return view("/classifieds/classified-new");
