@@ -108,6 +108,6 @@ class ListingsController extends Controller
         if(File::exists($image_path)) {
             File::delete($image_path);
         }
-        return redirect(route('editlisting', array($id)))->with('info', 'Image removed');
+        return redirect(route('editlisting', array($id)));
     }
 }
