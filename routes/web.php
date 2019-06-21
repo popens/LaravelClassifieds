@@ -23,15 +23,15 @@ Route::middleware('auth')->group(function() {
     });
 });
 
-Route::get("/classified/delete/{i}", "ListingsController@delete")->name('deletelisting');
+Route::get("/classified/delete/{item}", "ListingsController@delete")->name('deletelisting');
 Route::get('/classifieds', 'ListingsController@listAll')->name('classifieds');
-Route::get('/classified/edit/{i}', 'ListingsController@edit')->name('editlisting');
-Route::get('/classified/{i}/{t}', 'ListingsController@view')->name('viewlisting');
+Route::get('/classified/edit/{item}', 'ListingsController@edit')->name('editlisting');
+Route::get('/classified/{item}/{title}', 'ListingsController@view')->name('viewlisting');
 
 Route::get("/classified/new", function() {
     return view("/classifieds/classified-new");
 })->name('addlistings');
 
 Route::post("/classified/create", "ListingsController@create")->name('add');
-Route::post("/classified/update/{i}", "ListingsController@update")->name('update');
-Route::get("/classified/{i}/delete/{y}", "ListingsController@deleteImage")->name('deleteimage');
+Route::post("/classified/update/{item}", "ListingsController@update")->name('update');
+Route::get("/classified/{item}/delete/{image}", "ListingsController@deleteImage")->name('deleteimage');

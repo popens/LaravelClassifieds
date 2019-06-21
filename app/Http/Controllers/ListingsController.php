@@ -9,9 +9,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 class ListingsController extends Controller
 {
-    public function hola() {
-        echo "hola";
-    }
     public function listAll()
     {
         $items = Listings::all();
@@ -64,7 +61,7 @@ class ListingsController extends Controller
             'description' => 'Required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ));
-        //$input['imagename'] = null;
+
         if($request->file('image')) {
             $image = $request->file('image');
             $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
@@ -95,7 +92,6 @@ class ListingsController extends Controller
        return redirect('/classifieds')->with('info', 'You deleted successfully');
       
     }
-
 
     public function deleteImage($id, $image)
     {
