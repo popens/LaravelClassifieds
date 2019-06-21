@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Listings;
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 class ListingsController extends Controller
 {
     public function listAll()
@@ -30,19 +32,22 @@ class ListingsController extends Controller
         $this->validate($request, array(
             'title' => 'Required',
             'description' => 'Required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ));
         $model = new Listings;
         $model->title = $request->input('title');
+        $model->slug = Str::slug($request->input('title'));
         $model->description = $request->input('description');
         $model->price = $request->input('price');
 
-        $image = $request->file('image');
-        $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
-        $destinationPath = public_path('/images');
-        $image->move($destinationPath, $input['imagename']);
-        
-        $model->image = $input['imagename'];
+        if($request->file('image')) {
+            $image = $request->file('image');
+            $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/images');
+            $image->move($destinationPath, $input['imagename']);
+            
+            $model->image = $input['imagename'];
+        }
 
         $model->save();
 
@@ -54,31 +59,38 @@ class ListingsController extends Controller
         $this->validate($request, array(
             'title' => 'Required',
             'description' => 'Required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ));
+
+        if($request->file('image')) {
+            $image = $request->file('image');
+            $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/images');
+            $image->move($destinationPath, $input['imagename']);
+        }    
         
-        $image = $request->file('image');
-        $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
-        $destinationPath = public_path('/images');
-        $image->move($destinationPath, $input['imagename']);
-            
-            
         $data = array(
             'title' => $request->input('title'),
             'description' => $request->input('description'),
             'price' => $request->input('price'),
-            'image' =>  $input['imagename']
             );
-
+        if($request->file('image')) {
+            $data = Arr::add($data, 'image', $input['imagename']);
+        }
         Listings::where('id', $id)->update($data);
-
         return redirect('/classifieds')->with('info', 'You updated successfully');
     }
 
     public function delete($id)
     {
+        $items = Listings::find($id);
+        $image_path = public_path('/images/'.$items->image);
+        if(File::exists($image_path)) {
+          File::delete($image_path);
+        }
        Listings::where('id', $id)->delete();
        return redirect('/classifieds')->with('info', 'You deleted successfully');
+      
     }
 
     public function deleteImage($id, $image)
@@ -92,7 +104,6 @@ class ListingsController extends Controller
         if(File::exists($image_path)) {
             File::delete($image_path);
         }
-        return redirect(route('editlisting', array($id)))->with('info', 'Image removed');
+        return redirect(route('editlisting', array($id)));
     }
-
 }
