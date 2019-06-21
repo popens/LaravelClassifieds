@@ -6,8 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Listings;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 class ListingsController extends Controller
 {
+    public function hola() {
+        echo "hola";
+    }
     public function listAll()
     {
         $items = Listings::all();
@@ -39,7 +43,7 @@ class ListingsController extends Controller
         $model->description = $request->input('description');
         $model->price = $request->input('price');
 
-        if($request->input('image')) {
+        if($request->file('image')) {
             $image = $request->file('image');
             $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
             $destinationPath = public_path('/images');
@@ -60,20 +64,22 @@ class ListingsController extends Controller
             'description' => 'Required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ));
-        $input['imagename'] = null;
+        //$input['imagename'] = null;
         if($request->file('image')) {
             $image = $request->file('image');
             $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
             $destinationPath = public_path('/images');
             $image->move($destinationPath, $input['imagename']);
         }    
-            
+        
         $data = array(
             'title' => $request->input('title'),
             'description' => $request->input('description'),
             'price' => $request->input('price'),
-            'image' =>  $input['imagename']
             );
+        if($request->file('image')) {
+            $data = Arr::add($data, 'image', $input['imagename']);
+        }
         Listings::where('id', $id)->update($data);
         return redirect('/classifieds')->with('info', 'You updated successfully');
     }
