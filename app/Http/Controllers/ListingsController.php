@@ -45,7 +45,7 @@ class ListingsController extends Controller
         if($request->file('image')) {
             $image = $request->file('image');
             $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
-            $destinationPath = public_path('/images');
+            $destinationPath = public_path('/uploads');
             $image->move($destinationPath, $input['imagename']);
             
             $model->image = $input['imagename'];
@@ -67,7 +67,7 @@ class ListingsController extends Controller
         if($request->file('image')) {
             $image = $request->file('image');
             $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
-            $destinationPath = public_path('/images');
+            $destinationPath = public_path('/uploads');
             $image->move($destinationPath, $input['imagename']);
         }    
         
@@ -90,8 +90,7 @@ class ListingsController extends Controller
     {
         $items = Listings::find($id);
 
-        $image_path = public_path('/images/'.$items->image);
-
+        $image_path = public_path('/uploads/'.$items->image);
         if(File::exists($image_path)) {
             File::delete($image_path);
         }
@@ -107,7 +106,7 @@ class ListingsController extends Controller
         );
         Listings::where('id', $id)->update($data);
 
-        $image_path = public_path('/images/'.$image);
+        $image_path = public_path('/uploads/'.$image);
         if(File::exists($image_path)) {
             File::delete($image_path);
         }
