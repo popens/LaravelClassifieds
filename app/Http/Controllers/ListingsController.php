@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\File;
 use App\Listings;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+
 class ListingsController extends Controller
 {
     public function listAll()
@@ -34,6 +35,7 @@ class ListingsController extends Controller
             'description' => 'Required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ));
+
         $model = new Listings;
         $model->title = $request->input('title');
         $model->slug = Str::slug($request->input('title'));
@@ -72,38 +74,44 @@ class ListingsController extends Controller
         $data = array(
             'title' => $request->input('title'),
             'description' => $request->input('description'),
-            'price' => $request->input('price'),
-            );
+            'price' => $request->input('price')
+        );
+
         if($request->file('image')) {
             $data = Arr::add($data, 'image', $input['imagename']);
         }
+
         Listings::where('id', $id)->update($data);
+
         return redirect('/classifieds')->with('info', 'You updated successfully');
     }
 
     public function delete($id)
     {
         $items = Listings::find($id);
+
         $image_path = public_path('/images/'.$items->image);
+
         if(File::exists($image_path)) {
-          File::delete($image_path);
+            File::delete($image_path);
         }
-       Listings::where('id', $id)->delete();
-       return redirect('/classifieds')->with('info', 'You deleted successfully');
-      
+        Listings::destroy($id);
+
+        return redirect('/classifieds')->with('info', 'You deleted successfully');
     }
 
     public function deleteImage($id, $image)
     {
         $data = array(
             'image' =>  null
-            );
+        );
         Listings::where('id', $id)->update($data);
 
         $image_path = public_path('/images/'.$image);
         if(File::exists($image_path)) {
             File::delete($image_path);
         }
+
         return redirect(route('editlisting', array($id)));
     }
 }
