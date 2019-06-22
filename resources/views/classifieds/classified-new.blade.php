@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="form-group{{ $errors->has('image') ? ' has-error' : '' }}">
-                    <label for="image">Image upload</label>
+                    <label for="image">Image upload</label><br>
                     <input id="image" type="file" class="" name="image" value="{{ old('image') }}">
                     @if ($errors->has('image'))
                         <span class="help-block">
