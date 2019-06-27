@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function() {
 
 Route::get("/classified/delete/{item}", "ListingsController@delete")->name('deletelisting');
 Route::get('/classifieds', 'ListingsController@listAll')->name('classifieds');
+Route::get('/classifieds/search', 'ListingsController@listAll')->name('searchlisting');
 Route::get('/classified/edit/{item}', 'ListingsController@edit')->name('editlisting');
 Route::get('/classified/{item}/{title}', 'ListingsController@view')->name('viewlisting');
 
