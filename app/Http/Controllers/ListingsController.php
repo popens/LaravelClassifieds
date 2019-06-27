@@ -10,9 +10,16 @@ use Illuminate\Support\Arr;
 
 class ListingsController extends Controller
 {
-    public function listAll()
+
+    public function listAll(Request $request)
     {
-        $items = Listings::all();
+        if ($request->has('keyword')) {
+            $keyword = $request->input('keyword');//Input::get('keyword');
+            $items = Listings::where('title', 'like', "%{$keyword}%")
+            ->orWhere('description', 'LIKE', "%{$keyword}%") ->get();
+        } else {
+            $items = Listings::all();
+        }
         return view('classifieds/classified-all', ['item'=> $items]);
     }
 
