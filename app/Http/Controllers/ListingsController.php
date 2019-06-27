@@ -14,7 +14,7 @@ class ListingsController extends Controller
     public function listAll(Request $request)
     {
         if ($request->has('keyword')) {
-            $keyword = $request->input('keyword');//Input::get('keyword');
+            $keyword = $request->input('keyword');
             $items = Listings::where('title', 'like', "%{$keyword}%")
             ->orWhere('description', 'LIKE', "%{$keyword}%") ->get();
         } else {
