@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Listings;
+use App\Categories;
+use App\ListingsRelation;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
@@ -21,6 +23,11 @@ class ListingsController extends Controller
             $items = Listings::all();
         }
         return view('classifieds/classified-all', ['item'=> $items]);
+    }
+
+    public function add() {
+        $categories = Categories::all();
+        return view('classifieds/classified-new', ['category'=> $categories]);
     }
 
     public function edit($id)
@@ -40,6 +47,7 @@ class ListingsController extends Controller
         $this->validate($request, array(
             'title' => 'Required',
             'description' => 'Required',
+            'category' => 'Required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ));
 
@@ -57,10 +65,11 @@ class ListingsController extends Controller
             
             $model->image = $input['imagename'];
         }
-
+        $category = $request->input('category');
         $model->save();
-
-        return redirect('/classifieds')->with('info', 'You posted successfully');
+        $listings = Listings::find($model->id);
+        $listings->categories()->attach($category);
+       return redirect()->route('classifieds')->with('info', 'You posted successfully');
     }
 
     public function update(Request $request, $id)
@@ -90,7 +99,7 @@ class ListingsController extends Controller
 
         Listings::where('id', $id)->update($data);
 
-        return redirect('/classifieds')->with('info', 'You updated successfully');
+        return redirect()->route('classifieds')->with('info', 'You updated successfully');
     }
 
     public function delete($id)
@@ -103,7 +112,7 @@ class ListingsController extends Controller
         }
         Listings::destroy($id);
 
-        return redirect('/classifieds')->with('info', 'You deleted successfully');
+        return redirect()->route('classifieds')->with('info', 'You deleted successfully');
     }
 
     public function deleteImage($id, $image)

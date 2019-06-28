@@ -29,9 +29,7 @@ Route::get('/classifieds/search', 'ListingsController@listAll')->name('searchlis
 Route::get('/classified/edit/{item}', 'ListingsController@edit')->name('editlisting');
 Route::get('/classified/{item}/{title}', 'ListingsController@view')->name('viewlisting');
 
-Route::get("/classified/new", function() {
-    return view("/classifieds/classified-new");
-})->name('addlistings');
+Route::get("/classified/new", "ListingsController@add")->name('addlistings');
 
 Route::post("/classified/create", "ListingsController@create")->name('add');
 Route::post("/classified/update/{item}", "ListingsController@update")->name('update');
