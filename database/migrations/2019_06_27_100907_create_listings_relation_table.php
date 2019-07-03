@@ -18,7 +18,6 @@ class CreateListingsRelationTable extends Migration
             $table->integer('category_id');
             $table->integer('listing_id');
             $table->integer('user_id')->nullable();
-            $table->timestamps();
         });
     }
 

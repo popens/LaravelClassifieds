@@ -1,7 +1,6 @@
 <?php
 
 namespace App;
-use App\Categories;
 use Illuminate\Database\Eloquent\Model;
 
 class ListingsRelation extends Model
@@ -10,4 +9,7 @@ class ListingsRelation extends Model
 	protected $primaryKey = 'id';
     protected $fillable = array('category_id', 'listing_id');
 
+    public function detach_relation() {
+        
+    }
 }

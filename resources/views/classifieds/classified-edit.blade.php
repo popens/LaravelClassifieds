@@ -23,6 +23,27 @@
                         </span>
                     @endif
                 </div>
+                
+                @if ($categories->count() >= 1)
+                    <div class="form-group">
+                    <label for="category">Category</label>
+                    <select class="form-control" name="category">
+                        <option>Select...</option>
+                        @foreach($categories->all() as $category)
+                            @if($item->categories[0]->id == $category->id)
+                                <option selected="selected" value="{{$category->id}}">{{$category->name}}</option>
+                            @else
+                                <option value="{{$category->id}}">{{$category->name}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    @if ($errors->has('category'))
+                        <span class="help-block">
+                            <strong>{{ $errors->title('category') }}</strong>
+                        </span>
+                    @endif
+                    </div>
+                @endif
 
                 <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
                     <label for="description">Description</label>

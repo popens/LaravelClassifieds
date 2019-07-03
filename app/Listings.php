@@ -12,6 +12,7 @@ class Listings extends Model
 	protected $fillable = array('title', 'slug', 'description', 'price', 'image');
 
 	public function categories() {
-		return $this->belongsToMany('App\Categories', 'listings_relation');
+		return $this->belongsToMany('App\Categories', 'listings_relation', 'listing_id', 'category_id');
+		
 	}
 }

@@ -15,12 +15,26 @@ class ListingsController extends Controller
 
     public function listAll(Request $request)
     {
+        $items = Listings::all();
         if ($request->has('keyword')) {
             $keyword = $request->input('keyword');
             $items = Listings::where('title', 'like', "%{$keyword}%")
             ->orWhere('description', 'LIKE', "%{$keyword}%") ->get();
-        } else {
-            $items = Listings::all();
+        }
+        
+        if ($request->has('cat')) {
+            $cat = $request->input('keyword');
+            //$items = Listings::with('categories')->get();
+            //$items = Listings::where('category_id', 'like', "%{$cat}%")->get();
+          
+            $items = Listings::get(); //::find($post_id);
+            $items = Listings::with(['categories' => function ($query) {
+                $query->where('id', "1");
+            }])->get();
+            //$items = $post->categories()->where('category_id', $cat);
+            echo "<pre>";
+            var_dump($items[0]);
+            echo "</pre>";
         }
         return view('classifieds/classified-all', ['item'=> $items]);
     }
@@ -33,7 +47,8 @@ class ListingsController extends Controller
     public function edit($id)
     {
         $items = Listings::find($id);
-        return view('classifieds/classified-edit', ['item'=> $items]);
+        $categories = Categories::all();
+        return view('classifieds/classified-edit', ['item'=> $items, 'categories'=> $categories]);
     }
 
     public function view($id)
@@ -69,7 +84,7 @@ class ListingsController extends Controller
         $model->save();
         $listings = Listings::find($model->id);
         $listings->categories()->attach($category);
-       return redirect()->route('classifieds')->with('info', 'You posted successfully');
+        return redirect()->route('classifieds')->with('info', 'You posted successfully');
     }
 
     public function update(Request $request, $id)
@@ -77,6 +92,7 @@ class ListingsController extends Controller
         $this->validate($request, array(
             'title' => 'Required',
             'description' => 'Required',
+            'category' => 'Required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ));
 
@@ -96,9 +112,10 @@ class ListingsController extends Controller
         if($request->file('image')) {
             $data = Arr::add($data, 'image', $input['imagename']);
         }
-
+        $category = $request->input('category');
         Listings::where('id', $id)->update($data);
-
+        ListingsRelation::where('listing_id', $id)->update(['category_id'=> $category]);
+       
         return redirect()->route('classifieds')->with('info', 'You updated successfully');
     }
 
@@ -111,6 +128,7 @@ class ListingsController extends Controller
             File::delete($image_path);
         }
         Listings::destroy($id);
+       
 
         return redirect()->route('classifieds')->with('info', 'You deleted successfully');
     }
