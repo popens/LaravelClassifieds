@@ -32,6 +32,7 @@
                     </div>
                     <div class="col p-3">
                         <h4 class="mt-0">{{$item->title}}</h4>
+                        <p><small>{{$item->categories[0]->name}}</small></p>
                         <a href="{{route('viewlisting', array($item->id, $item->slug))}}">VIEW</a>
                         <a href="{{route('editlisting', array($item->id))}}">EDIT</a>
                         <a href="{{route('deletelisting', array($item->id))}}">DELETE</a>

@@ -8,8 +8,12 @@
             <form action="{{route('searchlisting')}}" method="get" class="home-search-form">
                 <div class="input-group input-group-lg">
                     <input name="keyword" type="text" class="form-control" placeholder="Keyword...">
-                     <select class="form-control">
-                        <option>Category</option>
+                     <?php  $categories = App\Categories::all(); ?>
+                     <select name="cat" class="form-control">
+                        <option value="">All categories</option>
+                        @foreach($categories as $category)
+                        <option value="{{$category->id}}">{{$category->name}}</option>
+                        @endforeach
                     </select>
                     <div class="input-group-prepend">
                         <button type="submit" class="btn btn-secondary">Search</button>

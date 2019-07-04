@@ -23,7 +23,22 @@
                         </span>
                     @endif
                 </div>
-
+                @if ($category->count() >= 1)
+                    <div class="form-group">
+                    <label for="category">Category</label>
+                    <select class="form-control" name="category">
+                        <option>Select...</option>
+                        @foreach($category->all() as $category)
+                        <option value="{{$category->id}}">{{$category->name}}</option>
+                        @endforeach
+                    </select>
+                    @if ($errors->has('category'))
+                        <span class="help-block">
+                            <strong>{{ $errors->title('category') }}</strong>
+                        </span>
+                    @endif
+                    </div>
+                @endif
                 <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
                     <label for="description">Description</label>
                     <textarea id="description" type="text" class="form-control" rows="8" name="description"  required autofocus>{{ old('description') }}</textarea>

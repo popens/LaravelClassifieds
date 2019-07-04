@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\File;
 use App\Listings;
+use App\Categories;
+use App\ListingsRelation;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
@@ -13,20 +16,37 @@ class ListingsController extends Controller
 
     public function listAll(Request $request)
     {
-        if ($request->has('keyword')) {
-            $keyword = $request->input('keyword');
-            $items = Listings::where('title', 'like', "%{$keyword}%")
-            ->orWhere('description', 'LIKE', "%{$keyword}%") ->get();
+        if ($request->filled('keyword') or $request->filled('cat')) {
+            $items = Listings::whereHas('categories', function($q)
+            {
+                $keyword = Input::get('keyword');
+                $category = Input::get('cat');
+                if($keyword != '') {
+                    $matches[] = ['title', 'like', "%{$keyword}%"];
+                }
+                if($category != '') {
+                    $matches[] = ['category_id', $category];
+                }
+                $q->where(
+                    $matches
+                );
+            })->get();
         } else {
             $items = Listings::all();
         }
         return view('classifieds/classified-all', ['item'=> $items]);
     }
 
+    public function add() {
+        $categories = Categories::all();
+        return view('classifieds/classified-new', ['category'=> $categories]);
+    }
+
     public function edit($id)
     {
         $items = Listings::find($id);
-        return view('classifieds/classified-edit', ['item'=> $items]);
+        $categories = Categories::all();
+        return view('classifieds/classified-edit', ['item'=> $items, 'categories'=> $categories]);
     }
 
     public function view($id)
@@ -40,6 +60,7 @@ class ListingsController extends Controller
         $this->validate($request, array(
             'title' => 'Required',
             'description' => 'Required',
+            'category' => 'Required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ));
 
@@ -57,10 +78,11 @@ class ListingsController extends Controller
             
             $model->image = $input['imagename'];
         }
-
+        $category = $request->input('category');
         $model->save();
-
-        return redirect('/classifieds')->with('info', 'You posted successfully');
+        $listings = Listings::find($model->id);
+        $listings->categories()->attach($category);
+        return redirect()->route('classifieds')->with('info', 'You posted successfully');
     }
 
     public function update(Request $request, $id)
@@ -68,6 +90,7 @@ class ListingsController extends Controller
         $this->validate($request, array(
             'title' => 'Required',
             'description' => 'Required',
+            'category' => 'Required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ));
 
@@ -87,10 +110,11 @@ class ListingsController extends Controller
         if($request->file('image')) {
             $data = Arr::add($data, 'image', $input['imagename']);
         }
-
+        $category = $request->input('category');
         Listings::where('id', $id)->update($data);
-
-        return redirect('/classifieds')->with('info', 'You updated successfully');
+        ListingsRelation::where('listing_id', $id)->update(['category_id'=> $category]);
+       
+        return redirect()->route('classifieds')->with('info', 'You updated successfully');
     }
 
     public function delete($id)
@@ -101,9 +125,11 @@ class ListingsController extends Controller
         if(File::exists($image_path)) {
             File::delete($image_path);
         }
-        Listings::destroy($id);
 
-        return redirect('/classifieds')->with('info', 'You deleted successfully');
+        ListingsRelation::where('listing_id', $id)->delete();
+        Listings::destroy($id);
+        
+        return redirect()->route('classifieds')->with('info', 'You deleted successfully');
     }
 
     public function deleteImage($id, $image)
