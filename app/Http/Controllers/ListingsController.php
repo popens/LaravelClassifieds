@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\File;
 use App\Listings;
 use App\Categories;
@@ -15,26 +16,23 @@ class ListingsController extends Controller
 
     public function listAll(Request $request)
     {
-        $items = Listings::all();
-        if ($request->has('keyword')) {
-            $keyword = $request->input('keyword');
-            $items = Listings::where('title', 'like', "%{$keyword}%")
-            ->orWhere('description', 'LIKE', "%{$keyword}%") ->get();
-        }
-        
-        if ($request->has('cat')) {
-            $cat = $request->input('keyword');
-            //$items = Listings::with('categories')->get();
-            //$items = Listings::where('category_id', 'like', "%{$cat}%")->get();
-          
-            $items = Listings::get(); //::find($post_id);
-            $items = Listings::with(['categories' => function ($query) {
-                $query->where('id', "1");
-            }])->get();
-            //$items = $post->categories()->where('category_id', $cat);
-            echo "<pre>";
-            var_dump($items[0]);
-            echo "</pre>";
+        if ($request->filled('keyword') or $request->filled('cat')) {
+            $items = Listings::whereHas('categories', function($q)
+            {
+                $keyword = Input::get('keyword');
+                $category = Input::get('cat');
+                if($keyword != '') {
+                    $matches[] = ['title', 'like', "%{$keyword}%"];
+                }
+                if($category != '') {
+                    $matches[] = ['category_id', $category];
+                }
+                $q->where(
+                    $matches
+                );
+            })->get();
+        } else {
+            $items = Listings::all();
         }
         return view('classifieds/classified-all', ['item'=> $items]);
     }
@@ -127,9 +125,10 @@ class ListingsController extends Controller
         if(File::exists($image_path)) {
             File::delete($image_path);
         }
-        Listings::destroy($id);
-       
 
+        ListingsRelation::where('listing_id', $id)->delete();
+        Listings::destroy($id);
+        
         return redirect()->route('classifieds')->with('info', 'You deleted successfully');
     }
 
