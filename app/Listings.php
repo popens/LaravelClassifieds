@@ -13,6 +13,5 @@ class Listings extends Model
 
 	public function categories() {
 		return $this->belongsToMany('App\Categories', 'listings_relation', 'listing_id', 'category_id');
-		
 	}
 }
