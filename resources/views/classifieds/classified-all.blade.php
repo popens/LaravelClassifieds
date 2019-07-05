@@ -34,7 +34,7 @@
                         <h4 class="mt-0">{{$item->title}}</h4>
                         <p><small>{{$item->categories[0]->name}}</small></p>
                         @foreach ($item->users as $user)
-                        <p><small>{{$item->users[0]->firstname}}</small></p>
+                        <p><small>{{$user->firstname}}</small></p>
                         @endforeach
                         <a href="{{route('viewlisting', array($item->id, $item->slug))}}">VIEW</a>
                         <a href="{{route('editlisting', array($item->id))}}">EDIT</a>
