@@ -1,15 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use App\Listings;
 use App\Categories;
 use App\ListingsRelation;
-use Illuminate\Support\Str;
-use Illuminate\Support\Arr;
+
 
 class ListingsController extends Controller
 {
@@ -32,7 +33,7 @@ class ListingsController extends Controller
                 );
             })->get();
         } else {
-            $items = Listings::all();
+           $items = Listings::all();
         }
         return view('classifieds/classified-all', ['item'=> $items]);
     }
@@ -81,7 +82,14 @@ class ListingsController extends Controller
         $category = $request->input('category');
         $model->save();
         $listings = Listings::find($model->id);
-        $listings->categories()->attach($category);
+        if($user = Auth::user()) {
+           $user = $user->id;
+        } else {
+           $user = null;
+        }
+        $relation = new ListingsRelation;
+        $relation->create(['listing_id' => $model->id, 'category_id' => $category, 'user_id' => $user]);
+        
         return redirect()->route('classifieds')->with('info', 'You posted successfully');
     }
 
