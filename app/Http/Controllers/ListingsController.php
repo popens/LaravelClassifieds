@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use App\Listings;
+use App\Guest;
 use App\Categories;
 use App\ListingsRelation;
 
@@ -89,7 +90,12 @@ class ListingsController extends Controller
         }
         $relation = new ListingsRelation;
         $relation->create(['listing_id' => $model->id, 'category_id' => $category, 'user_id' => $user]);
-        
+        if(Auth::guest()) {
+            $name = $request->input('name');
+            $email = $request->input('email');
+            $guest = new Guest;
+            $guest->create(['listing_id' => $model->id, 'name' => $name, 'email' => $email]);
+        }
         return redirect()->route('classifieds')->with('info', 'You posted successfully');
     }
 
